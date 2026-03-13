@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { interval, Subscription } from "rxjs";
 
+import { useNavigate, Link } from "react-router-dom";
+import { saveScore } from "../utils/leaderboard";
 import GameBoard from "../components/GameBoard";
 import type { RootState } from "../app/store";
 import {
@@ -10,10 +12,10 @@ import {
   setActiveMole,
   resetGame,
 } from "../features/game/gameSlice";
-import { Link } from "react-router-dom";
 
 const GamePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const score = useSelector((state: RootState) => state.game.score);
   const timeLeft = useSelector((state: RootState) => state.game.timeLeft);
@@ -38,6 +40,17 @@ const GamePage = () => {
 
     return () => subscription.unsubscribe();
   }, [status, dispatch]);
+
+  useEffect(() => {
+    if (status !== "finished") return;
+
+    const playerName = window.prompt("Enter your name for the leaderboard:")?.trim();
+    const finalName = playerName || "Anonymous";
+
+    saveScore(finalName, score);
+    dispatch(resetGame());
+    navigate("/leaderboard");
+  }, [status, score, navigate, dispatch]);
 
   useEffect(() => {
     const existingLeaderboard = localStorage.getItem("leaderboard");

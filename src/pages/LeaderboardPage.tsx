@@ -1,24 +1,9 @@
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
-
-type LeaderboardEntry = {
-  name: string;
-  score: number;
-};
+import { getLeaderboard } from "../utils/leaderboard";
 
 const LeaderboardPage = () => {
-  const leaderboard = useMemo<LeaderboardEntry[]>(() => {
-    const storedScores = localStorage.getItem("leaderboard");
-
-    if (!storedScores) return [];
-
-    try {
-      return JSON.parse(storedScores) as LeaderboardEntry[];
-    } catch (error) {
-      console.error("Failed to parse leaderboard from localStorage:", error);
-      return [];
-    }
-  }, []);
+  const leaderboard = useMemo(() => getLeaderboard(), []);
 
   return (
     <main className="flex min-h-screen flex-col items-center px-4 py-10 text-white">
@@ -48,7 +33,7 @@ const LeaderboardPage = () => {
         <div className="mt-8 flex justify-center">
           <Link
             to="/"
-            className="rounded bg-white px-4 py-2 font-semibold text-black transition hover:opacity-90"
+            className="rounded bg-white px-4 py-2 font-semibold text-black"
           >
             Back to game
           </Link>
