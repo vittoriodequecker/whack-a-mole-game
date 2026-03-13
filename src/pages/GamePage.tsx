@@ -10,6 +10,7 @@ import {
   setActiveMole,
   resetGame,
 } from "../features/game/gameSlice";
+import { Link } from "react-router-dom";
 
 const GamePage = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,22 @@ const GamePage = () => {
 
     return () => subscription.unsubscribe();
   }, [status, dispatch]);
+
+  useEffect(() => {
+    const existingLeaderboard = localStorage.getItem("leaderboard");
+
+    if (!existingLeaderboard) {
+      const mockLeaderboard = [
+        { name: "Alice", score: 24 },
+        { name: "Bob", score: 19 },
+        { name: "Charlie", score: 17 },
+        { name: "Diana", score: 15 },
+        { name: "Ethan", score: 12 },
+      ];
+
+      localStorage.setItem("leaderboard", JSON.stringify(mockLeaderboard));
+    }
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col items-center">
@@ -68,6 +85,13 @@ const GamePage = () => {
         >
           Reset Game
         </button>
+
+        <Link
+          to="/leaderboard"
+          className="rounded bg-yellow-400 px-4 py-2 font-semibold text-black"
+        >
+          View Leaderboard
+        </Link>
       </div>
       <GameBoard />
     </div>
