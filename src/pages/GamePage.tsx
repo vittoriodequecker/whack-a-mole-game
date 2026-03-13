@@ -8,7 +8,7 @@ import {
   startGame,
   decreaseTime,
   setActiveMole,
-  endGame,
+  resetGame,
 } from "../features/game/gameSlice";
 
 const GamePage = () => {
@@ -27,7 +27,7 @@ const GamePage = () => {
       dispatch(decreaseTime());
     });
 
-    const mole$ = interval(800).subscribe(() => {
+    const mole$ = interval(1000).subscribe(() => {
       const randomIndex = Math.floor(Math.random() * 12);
       dispatch(setActiveMole(randomIndex));
     });
@@ -37,12 +37,6 @@ const GamePage = () => {
 
     return () => subscription.unsubscribe();
   }, [status, dispatch]);
-
-  useEffect(() => {
-    if (timeLeft === 0 && status === "playing") {
-      dispatch(endGame());
-    }
-  }, [timeLeft, status, dispatch]);
 
   return (
     <div className="flex min-h-screen flex-col items-center">
@@ -56,14 +50,25 @@ const GamePage = () => {
         <p>Status: {status}</p>
       </div>
 
-      <button
-        type="button"
-        onClick={() => dispatch(startGame())}
-        className="mb-8 rounded bg-white px-4 py-2 font-semibold text-black"
-      >
-        Start Game
-      </button>
+      <div className="mb-8 flex gap-4">
+        <button
+          type="button"
+          onClick={() => dispatch(startGame())}
+          disabled={status === "playing"}
+          className="rounded bg-white px-4 py-2 font-semibold text-black disabled:opacity-50"
+        >
+          Start Game
+        </button>
 
+        <button
+          type="button"
+          onClick={() => dispatch(resetGame())}
+          disabled={status === "Ready to Play"}
+          className="rounded bg-red-500 px-4 py-2 font-semibold text-white disabled:opacity-50"
+        >
+          Reset Game
+        </button>
+      </div>
       <GameBoard />
     </div>
   );
