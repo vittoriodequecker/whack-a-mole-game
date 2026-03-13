@@ -5,3 +5,19 @@ body {
   background-image: url("../images/background.jpg");
   background-size: cover;
 }
+
+@keyframes hammerHit {
+  0% {
+    transform: rotate(-40deg) translateY(-10px);
+  }
+  50% {
+    transform: rotate(0deg) translateY(10px);
+  }
+  100% {
+    transform: rotate(-30deg) translateY(-5px);
+  }
+}
+
+.animate-hammer {
+  animation: hammerHit 200ms ease-out;
+}
