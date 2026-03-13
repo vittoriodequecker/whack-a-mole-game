@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { interval, Subscription } from "rxjs";
 
@@ -16,6 +16,9 @@ import {
 const GamePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [playerName, setPlayerName] = useState("");
+  const [pendingScore, setPendingScore] = useState<number | null>(null);
 
   const score = useSelector((state: RootState) => state.game.score);
   const timeLeft = useSelector((state: RootState) => state.game.timeLeft);
@@ -40,17 +43,13 @@ const GamePage = () => {
 
     return () => subscription.unsubscribe();
   }, [status, dispatch]);
-
+  
   useEffect(() => {
     if (status !== "finished") return;
 
-    const playerName = window.prompt("Enter your name for the leaderboard:")?.trim();
-    const finalName = playerName || "Anonymous";
-
-    saveScore(finalName, score);
-    dispatch(resetGame());
-    navigate("/leaderboard");
-  }, [status, score, navigate, dispatch]);
+    setPendingScore(score);
+    setShowNameModal(true);
+  }, [status, score]);
 
   useEffect(() => {
     const existingLeaderboard = localStorage.getItem("leaderboard");
@@ -67,6 +66,19 @@ const GamePage = () => {
       localStorage.setItem("leaderboard", JSON.stringify(mockLeaderboard));
     }
   }, []);
+
+  const handleSaveScore = () => {
+    if (pendingScore === null) return;
+
+    const finalName = playerName.trim() || "Anonymous";
+
+    saveScore(finalName, pendingScore);
+    setPlayerName("");
+    setPendingScore(null);
+    setShowNameModal(false);
+    dispatch(resetGame());
+    navigate("/leaderboard");
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center">
@@ -107,6 +119,52 @@ const GamePage = () => {
         </Link>
       </div>
       <GameBoard />
+
+      {showNameModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <h2 className="mb-4 text-2xl font-bold text-black">
+              Save your score
+            </h2>
+
+            <p className="mb-4 text-gray-700">
+              Your score: <span className="font-semibold">{pendingScore}</span>
+            </p>
+
+            <input
+              type="text"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSaveScore();
+                }
+              }}
+              placeholder="Enter your name"
+              maxLength={20}
+              className="mb-4 w-full rounded-lg border border-gray-300 px-4 py-2 text-black outline-none focus:border-black"
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={handleSaveScore}
+                className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-black"
+              >
+                Skip
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSaveScore}
+                className="rounded-lg bg-black px-4 py-2 font-semibold text-white"
+              >
+                Save score
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
