@@ -5,14 +5,21 @@ import Mole from "./Mole";
 
 const GameBoard = () => {
   const dispatch = useDispatch();
+
   const activeMoleIndex = useSelector(
     (state: RootState) => state.game.activeMoleIndex
   );
 
-  const holes = Array.from({ length: 12 });
+  const { rows, columns } = useSelector((state: RootState) => state.settings);
+
+  const totalMoles = rows * columns;
+  const holes = Array.from({ length: totalMoles });
 
   return (
-    <div className="mt-12 grid grid-cols-4 gap-5 justify-center">
+    <div
+      className="mt-12 grid gap-5 justify-center"
+      style={{ gridTemplateColumns: `repeat(${columns}, 120px)` }}
+    >
       {holes.map((_, index) => (
         <Mole
           key={index}

@@ -12,6 +12,7 @@ import {
   setActiveMole,
   resetGame,
 } from "../features/game/gameSlice";
+import SettingsModal from "../components/SettingsModal";
 
 const GamePage = () => {
   const dispatch = useDispatch();
@@ -19,10 +20,16 @@ const GamePage = () => {
   const [showNameModal, setShowNameModal] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [pendingScore, setPendingScore] = useState<number | null>(null);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const score = useSelector((state: RootState) => state.game.score);
   const timeLeft = useSelector((state: RootState) => state.game.timeLeft);
   const status = useSelector((state: RootState) => state.game.status);
+  const { rows, columns, moleIntervalMs } = useSelector(
+    (state: RootState) => state.settings
+  );
+
+  const totalMoles = rows * columns;
 
   useEffect(() => {
     if (status !== "playing") return;
@@ -33,8 +40,8 @@ const GamePage = () => {
       dispatch(decreaseTime());
     });
 
-    const mole$ = interval(1000).subscribe(() => {
-      const randomIndex = Math.floor(Math.random() * 12);
+    const mole$ = interval(moleIntervalMs).subscribe(() => {
+      const randomIndex = Math.floor(Math.random() * totalMoles);
       dispatch(setActiveMole(randomIndex));
     });
 
@@ -42,7 +49,7 @@ const GamePage = () => {
     subscription.add(mole$);
 
     return () => subscription.unsubscribe();
-  }, [status, dispatch]);
+  }, [status, dispatch, moleIntervalMs, totalMoles]);
   
   useEffect(() => {
     if (status !== "finished") return;
@@ -117,8 +124,22 @@ const GamePage = () => {
         >
           View Leaderboard
         </Link>
+
+        <button
+          type="button"
+          onClick={() => setShowSettingsModal(true)}
+          className="rounded bg-blue-500 px-4 py-2 font-semibold text-white"
+        >
+          Settings
+        </button>
       </div>
       <GameBoard />
+
+      <SettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+        disabled={status === "playing"}
+      />
 
       {showNameModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
