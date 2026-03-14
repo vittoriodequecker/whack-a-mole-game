@@ -13,10 +13,12 @@ import {
   resetGame,
 } from "../features/game/gameSlice";
 import SettingsModal from "../components/SettingsModal";
+import NameModal from "../components/NameModal";
 
 const GamePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [showNameModal, setShowNameModal] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [pendingScore, setPendingScore] = useState<number | null>(null);
@@ -25,6 +27,7 @@ const GamePage = () => {
   const score = useSelector((state: RootState) => state.game.score);
   const timeLeft = useSelector((state: RootState) => state.game.timeLeft);
   const status = useSelector((state: RootState) => state.game.status);
+  
   const { rows, columns, moleIntervalMs, gameDurationSeconds } = useSelector(
     (state: RootState) => state.settings
   );
@@ -148,51 +151,14 @@ const GamePage = () => {
         disabled={status === "playing"}
       />
 
-      {showNameModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <h2 className="mb-4 text-2xl font-bold text-black">
-              Save your score
-            </h2>
-
-            <p className="mb-4 text-gray-700">
-              Your score: <span className="font-semibold">{pendingScore}</span>
-            </p>
-
-            <input
-              type="text"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSaveScore();
-                }
-              }}
-              placeholder="Enter your name"
-              maxLength={20}
-              className="mb-4 w-full rounded-lg border border-gray-300 px-4 py-2 text-black outline-none focus:border-black"
-            />
-
-            <div className="flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={handleSaveScore}
-                className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-black"
-              >
-                Skip
-              </button>
-
-              <button
-                type="button"
-                onClick={handleSaveScore}
-                className="rounded-lg bg-black px-4 py-2 font-semibold text-white"
-              >
-                Save score
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <NameModal
+        isOpen={showNameModal}
+        score={pendingScore}
+        playerName={playerName}
+        onChangePlayerName={setPlayerName}
+        onSkip={handleSaveScore}
+        onSave={handleSaveScore}
+      />
     </div>
   );
 };

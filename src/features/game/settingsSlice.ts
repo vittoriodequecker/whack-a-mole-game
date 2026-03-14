@@ -1,5 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+export const DEFAULT_ROWS = 3;
+export const DEFAULT_COLUMNS = 4;
+export const DEFAULT_MOLE_INTERVAL_MS = 800;
+export const DEFAULT_GAME_DURATION_SECONDS = 120;
+
 type SettingsState = {
   rows: number;
   columns: number;
@@ -8,10 +13,10 @@ type SettingsState = {
 };
 
 const initialState: SettingsState = {
-  rows: 3,
-  columns: 4,
-  moleIntervalMs: 800,
-  gameDurationSeconds: 120,
+  rows: DEFAULT_ROWS,
+  columns: DEFAULT_COLUMNS,
+  moleIntervalMs: DEFAULT_MOLE_INTERVAL_MS,
+  gameDurationSeconds: DEFAULT_GAME_DURATION_SECONDS,
 };
 
 const settingsSlice = createSlice({

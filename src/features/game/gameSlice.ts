@@ -1,6 +1,10 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+export const DEFAULT_SCORE = 0;
+export const DEFAULT_TIMELEFT = 120;
+export const DEFAULT_STATUS = "Ready to Play";
+
 type GameStatus = "Ready to Play" | "playing" | "finished";
 
 type GameState = {
@@ -11,10 +15,10 @@ type GameState = {
 };
 
 const initialState: GameState = {
-  score: 0,
-  timeLeft: 120,
+  score: DEFAULT_SCORE,
+  timeLeft: DEFAULT_TIMELEFT,
   activeMoleIndex: null,
-  status: "Ready to Play",
+  status: DEFAULT_STATUS,
 };
 
 const gameSlice = createSlice({
@@ -22,7 +26,7 @@ const gameSlice = createSlice({
   initialState,
   reducers: {
     startGame: (state, action: PayloadAction<number>) => {
-      state.score = 0;
+      state.score = DEFAULT_SCORE;
       state.timeLeft = action.payload;
       state.activeMoleIndex = null;
       state.status = "playing";
