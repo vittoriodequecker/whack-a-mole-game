@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { interval, Subscription } from "rxjs";
 
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { saveScore } from "../utils/leaderboard";
 import GameBoard from "../components/GameBoard";
 import type { RootState } from "../app/store";
