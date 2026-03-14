@@ -87,6 +87,13 @@ const GamePage = () => {
     navigate("/leaderboard");
   };
 
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center">
       <h1 className="mt-10 mb-8 text-4xl font-bold text-white">
@@ -95,7 +102,7 @@ const GamePage = () => {
 
       <div className="mb-6 flex gap-6 rounded bg-black/40 px-6 py-3 text-white">
         <p>Score: {score}</p>
-        <p>Time: {timeLeft}s</p>
+        <p>Time: {formatTime(timeLeft)}</p>
         <p>Status: {status}</p>
       </div>
 
