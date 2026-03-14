@@ -1,10 +1,13 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../app/store";
 import {
   setGridSize,
   setMoleIntervalMs,
+  setGameDurationSeconds,
   resetSettings,
 } from "../features/game/settingsSlice";
+import { setTimeLeft } from "../features/game/gameSlice";
 
 type SettingsModalProps = {
   isOpen: boolean;
@@ -19,11 +22,49 @@ const SettingsModal = ({
 }: SettingsModalProps) => {
   const dispatch = useDispatch();
 
-  const { rows, columns, moleIntervalMs } = useSelector(
+  const { rows, columns, moleIntervalMs, gameDurationSeconds } = useSelector(
     (state: RootState) => state.settings
   );
 
+  const [localGrid, setLocalGrid] = useState(`${rows}x${columns}`);
+  const [localSpeed, setLocalSpeed] = useState(String(moleIntervalMs));
+  const [localDuration, setLocalDuration] = useState(String(gameDurationSeconds));
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setLocalGrid(`${rows}x${columns}`);
+    setLocalSpeed(String(moleIntervalMs));
+    setLocalDuration(String(gameDurationSeconds));
+  }, [isOpen, rows, columns, moleIntervalMs, gameDurationSeconds]);
+
   if (!isOpen) return null;
+
+  const handleSave = () => {
+    const [nextRows, nextColumns] = localGrid.split("x").map(Number);
+    const nextSpeed = Number(localSpeed);
+    const nextDuration = Number(localDuration);
+
+    dispatch(setGridSize({ rows: nextRows, columns: nextColumns }));
+    dispatch(setMoleIntervalMs(nextSpeed));
+    dispatch(setGameDurationSeconds(nextDuration));
+
+    if (!disabled) {
+      dispatch(setTimeLeft(nextDuration));
+    }
+
+    onClose();
+  };
+
+  const handleReset = () => {
+    dispatch(resetSettings());
+
+    if (!disabled) {
+      dispatch(setTimeLeft(120));
+    }
+
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
@@ -46,20 +87,9 @@ const SettingsModal = ({
             </label>
             <select
               id="grid-size"
-              value={`${rows}x${columns}`}
+              value={localGrid}
               disabled={disabled}
-              onChange={(e) => {
-                const [nextRows, nextColumns] = e.target.value
-                  .split("x")
-                  .map(Number);
-
-                dispatch(
-                  setGridSize({
-                    rows: nextRows,
-                    columns: nextColumns,
-                  })
-                );
-              }}
+              onChange={(e) => setLocalGrid(e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 disabled:cursor-not-allowed disabled:bg-gray-100"
             >
               <option value="3x4">3 x 4</option>
@@ -74,9 +104,9 @@ const SettingsModal = ({
             </label>
             <select
               id="mole-speed"
-              value={String(moleIntervalMs)}
+              value={localSpeed}
               disabled={disabled}
-              onChange={(e) => dispatch(setMoleIntervalMs(Number(e.target.value)))}
+              onChange={(e) => setLocalSpeed(e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 disabled:cursor-not-allowed disabled:bg-gray-100"
             >
               <option value="1200">Slow</option>
@@ -85,10 +115,28 @@ const SettingsModal = ({
             </select>
           </div>
 
+          <div>
+            <label htmlFor="game-duration" className="mb-2 block font-semibold">
+              Game duration
+            </label>
+            <select
+              id="game-duration"
+              value={localDuration}
+              disabled={disabled}
+              onChange={(e) => setLocalDuration(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 disabled:cursor-not-allowed disabled:bg-gray-100"
+            >
+              <option value="30">30 seconds</option>
+              <option value="60">1 minute</option>
+              <option value="120">2 minutes</option>
+              <option value="180">3 minutes</option>
+            </select>
+          </div>
+
           <div className="flex justify-between pt-2">
             <button
               type="button"
-              onClick={() => dispatch(resetSettings())}
+              onClick={handleReset}
               disabled={disabled}
               className="rounded-lg bg-gray-200 px-4 py-2 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
@@ -97,7 +145,7 @@ const SettingsModal = ({
 
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleSave}
               className="rounded-lg bg-black px-4 py-2 font-semibold text-white"
             >
               Save

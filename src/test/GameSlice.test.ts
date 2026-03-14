@@ -27,7 +27,7 @@ describe("gameSlice", () => {
       status: "finished" as const,
     };
 
-    const state = gameReducer(previousState, startGame());
+    const state = gameReducer(previousState, startGame(120));
 
     expect(state).toEqual({
       score: 0,
@@ -35,6 +35,22 @@ describe("gameSlice", () => {
       activeMoleIndex: null,
       status: "playing",
     });
+  });
+
+  it("should start the game with the provided duration", () => {
+    const previousState = {
+      score: 5,
+      timeLeft: 80,
+      activeMoleIndex: 3,
+      status: "finished" as const,
+    };
+
+    const state = gameReducer(previousState, startGame(60));
+
+    expect(state.score).toBe(0);
+    expect(state.timeLeft).toBe(60);
+    expect(state.activeMoleIndex).toBe(null);
+    expect(state.status).toBe("playing");
   });
 
   it("should set an active mole", () => {

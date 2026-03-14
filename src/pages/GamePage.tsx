@@ -25,7 +25,7 @@ const GamePage = () => {
   const score = useSelector((state: RootState) => state.game.score);
   const timeLeft = useSelector((state: RootState) => state.game.timeLeft);
   const status = useSelector((state: RootState) => state.game.status);
-  const { rows, columns, moleIntervalMs } = useSelector(
+  const { rows, columns, moleIntervalMs, gameDurationSeconds } = useSelector(
     (state: RootState) => state.settings
   );
 
@@ -102,7 +102,7 @@ const GamePage = () => {
       <div className="mb-8 flex gap-4">
         <button
           type="button"
-          onClick={() => dispatch(startGame())}
+          onClick={() => dispatch(startGame(gameDurationSeconds))}
           disabled={status === "playing"}
           className="rounded bg-white px-4 py-2 font-semibold text-black disabled:opacity-50"
         >

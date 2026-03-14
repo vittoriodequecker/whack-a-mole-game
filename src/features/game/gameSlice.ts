@@ -21,9 +21,9 @@ const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    startGame: (state) => {
+    startGame: (state, action: PayloadAction<number>) => {
       state.score = 0;
-      state.timeLeft = 120;
+      state.timeLeft = action.payload;
       state.activeMoleIndex = null;
       state.status = "playing";
     },
@@ -33,6 +33,9 @@ const gameSlice = createSlice({
     },
     setActiveMole: (state, action: PayloadAction<number | null>) => {
       state.activeMoleIndex = action.payload;
+    },
+    setTimeLeft: (state, action: PayloadAction<number>) => {
+      state.timeLeft = action.payload;
     },
     decreaseTime: (state) => {
       if (state.timeLeft > 0) {
@@ -61,6 +64,7 @@ export const {
   startGame,
   endGame,
   setActiveMole,
+  setTimeLeft,
   decreaseTime,
   whackMole,
   resetGame,
