@@ -14,6 +14,8 @@ import {
 } from "../features/game/gameSlice";
 import SettingsModal from "../components/SettingsModal";
 import NameModal from "../components/NameModal";
+import ScoreDisplay from "../components/ScoreDisplay";
+import GameControls from "../components/GameControls";
 
 const GamePage = () => {
   const dispatch = useDispatch();
@@ -90,59 +92,26 @@ const GamePage = () => {
     navigate("/leaderboard");
   };
 
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-  };
-
   return (
-    <div className="flex min-h-screen flex-col items-center">
+    <div className="flex min-h-screen flex-col items-center">      
       <h1 className="mt-10 mb-8 text-4xl font-bold text-white">
         Whack-a-Mole
       </h1>
 
-      <div className="mb-6 flex gap-6 rounded bg-black/40 px-6 py-3 text-white">
-        <p>Score: {score}</p>
-        <p>Time: {formatTime(timeLeft)}</p>
-        <p>Status: {status}</p>
-      </div>
+      <ScoreDisplay
+        score={score}
+        timeLeft={timeLeft}
+        status={status}
+      />
 
-      <div className="mb-8 flex gap-4">
-        <button
-          type="button"
-          onClick={() => dispatch(startGame(gameDurationSeconds))}
-          disabled={status === "playing"}
-          className="rounded bg-white px-4 py-2 font-semibold text-black disabled:opacity-50"
-        >
-          Start Game
-        </button>
+      <GameControls
+        status={status}
+        gameDurationSeconds={gameDurationSeconds}
+        onStart={(duration) => dispatch(startGame(duration))}
+        onReset={() => dispatch(resetGame())}
+        onOpenSettings={() => setShowSettingsModal(true)}
+      />
 
-        <button
-          type="button"
-          onClick={() => dispatch(resetGame())}
-          disabled={status === "Ready to Play"}
-          className="rounded bg-red-500 px-4 py-2 font-semibold text-white disabled:opacity-50"
-        >
-          Reset Game
-        </button>
-
-        <Link
-          to="/leaderboard"
-          className="rounded bg-yellow-400 px-4 py-2 font-semibold text-black"
-        >
-          View Leaderboard
-        </Link>
-
-        <button
-          type="button"
-          onClick={() => setShowSettingsModal(true)}
-          className="rounded bg-blue-500 px-4 py-2 font-semibold text-white"
-        >
-          Settings
-        </button>
-      </div>
       <GameBoard />
 
       <SettingsModal

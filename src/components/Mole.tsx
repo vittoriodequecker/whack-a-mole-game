@@ -36,7 +36,7 @@ const Mole = ({ isActive, onWhack }: MoleProps) => {
       onClick={handleClick}
       className="relative h-[120px] w-[120px]"
     >
-        <div className="relative h-full w-full overflow-hidden">
+        <div className="relative h-full w-full overflow-hidden select-none">
             <img
                 src={mole}
                 alt="mole"
@@ -48,9 +48,11 @@ const Mole = ({ isActive, onWhack }: MoleProps) => {
             />
 
             <img
-                src={hole}
-                alt="hole"
-                className="absolute inset-0 z-10 h-full w-full"
+              src={hole}
+              alt="hole"
+              className={`absolute inset-0 z-10 h-full w-full transition-opacity duration-100 ${
+                isActive ? "opacity-0" : "opacity-100"
+              }`}
             />
         </div>
 

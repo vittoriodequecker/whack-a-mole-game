@@ -21,3 +21,28 @@ body {
 .animate-hammer {
   animation: hammerHit 200ms ease-out;
 }
+
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@keyframes scorePop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px) scale(1.05);
+  }
+}
+
+.animate-score-pop {
+  animation: scorePop 500ms ease-out forwards;
+}
