@@ -2,6 +2,7 @@ type NameModalProps = {
   isOpen: boolean;
   score: number | null;
   playerName: string;
+  rank: number | null;
   onChangePlayerName: (value: string) => void;
   onSkip: () => void;
   onSave: () => void;
@@ -11,6 +12,7 @@ const NameModal = ({
   isOpen,
   score,
   playerName,
+  rank,
   onChangePlayerName,
   onSkip,
   onSave,
@@ -23,8 +25,20 @@ const NameModal = ({
         <h2 className="mb-4 text-2xl font-bold text-black">Save your score</h2>
 
         <p className="mb-4 text-gray-700">
-          Your score: <span className="font-semibold">{score}</span>
-        </p>
+        Your score: <span className="font-semibold">{score}</span>
+      </p>
+
+      <p
+        className={`mb-4 rounded-lg px-3 py-2 text-sm font-medium ${
+          rank
+            ? "bg-green-100 text-green-700"
+            : "bg-orange-100 text-orange-700"
+        }`}
+      >
+        {rank
+          ? `Your rank: #${rank}`
+          : "Outside the top 10"}
+      </p>
 
         <input
           type="text"

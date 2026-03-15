@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { interval, Subscription } from "rxjs";
 
 import { useNavigate } from "react-router-dom";
-import { saveScore } from "../utils/leaderboard";
+import { getRank, saveScore } from "../utils/leaderboard";
 import GameBoard from "../components/GameBoard";
 import type { RootState } from "../app/store";
 import {
@@ -36,6 +36,8 @@ const GamePage = () => {
 
   const totalMoles = rows * columns;
 
+  const [rank, setRank] = useState<number | null>(null);
+
   useEffect(() => {
     if (status !== "playing") return;
 
@@ -60,6 +62,7 @@ const GamePage = () => {
     if (status !== "finished") return;
 
     setPendingScore(score);
+    setRank(getRank(score));
     setShowNameModal(true);
   }, [status, score]);
 
@@ -87,6 +90,7 @@ const GamePage = () => {
     saveScore(finalName, pendingScore);
     setPlayerName("");
     setPendingScore(null);
+    setRank(null);
     setShowNameModal(false);
     dispatch(resetGame());
     navigate("/leaderboard");
@@ -124,6 +128,7 @@ const GamePage = () => {
         isOpen={showNameModal}
         score={pendingScore}
         playerName={playerName}
+        rank={rank}
         onChangePlayerName={setPlayerName}
         onSkip={handleSaveScore}
         onSave={handleSaveScore}

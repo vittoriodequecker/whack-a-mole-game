@@ -18,6 +18,20 @@ export const getLeaderboard = (): LeaderboardEntry[] => {
   }
 };
 
+export const getRank = (score: number): number | null => {
+  const leaderboard = getLeaderboard();
+
+  const projectedLeaderboard = [...leaderboard, { name: "__preview__", score }]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+
+  const rank = projectedLeaderboard.findIndex(
+    (entry) => entry.name === "__preview__" && entry.score === score
+  );
+
+  return rank === -1 ? null : rank + 1;
+};
+
 export const saveScore = (name: string, score: number): LeaderboardEntry[] => {
   const leaderboard = getLeaderboard();
 
