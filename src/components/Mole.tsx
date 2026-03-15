@@ -21,12 +21,12 @@ const Mole = ({ isActive, onWhack }: MoleProps) => {
   const handleClick = () => {
     if (!isActive || isWhacked) return;
 
+    onWhack();
     setShowHammer(true);
     setIsWhacked(true);
 
     setTimeout(() => {
-        onWhack();
-        setShowHammer(false);
+      setShowHammer(false);
     }, 200);
   };
 
