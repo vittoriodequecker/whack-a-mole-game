@@ -92,7 +92,7 @@ const GamePage = () => {
     setPendingScore(null);
     setRank(null);
     setShowNameModal(false);
-    dispatch(resetGame());
+    dispatch(resetGame(gameDurationSeconds));
     navigate("/leaderboard");
   };
 
@@ -112,7 +112,7 @@ const GamePage = () => {
         status={status}
         gameDurationSeconds={gameDurationSeconds}
         onStart={(duration) => dispatch(startGame(duration))}
-        onReset={() => dispatch(resetGame())}
+        onReset={() => dispatch(resetGame(gameDurationSeconds))}
         onOpenSettings={() => setShowSettingsModal(true)}
       />
 

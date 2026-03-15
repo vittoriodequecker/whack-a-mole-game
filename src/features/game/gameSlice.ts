@@ -60,7 +60,12 @@ const gameSlice = createSlice({
         state.activeMoleIndex = null;
       }
     },
-    resetGame: () => initialState,
+    resetGame: (state, action: PayloadAction<number>) => {
+      state.score = 0;
+      state.timeLeft = action.payload;
+      state.activeMoleIndex = null;
+      state.status = "Ready to Play";
+    },
   },
 });
 

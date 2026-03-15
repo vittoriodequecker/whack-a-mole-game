@@ -123,7 +123,7 @@ describe("gameSlice", () => {
       status: "playing" as const,
     };
 
-    const state = gameReducer(previousState, resetGame());
+    const state = gameReducer(previousState, resetGame(120));
 
     expect(state).toEqual({
       score: 0,

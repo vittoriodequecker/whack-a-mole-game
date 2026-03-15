@@ -30,7 +30,7 @@ describe("Mole", () => {
     expect(screen.queryByAltText("hammer")).not.toBeInTheDocument();
   });
 
-  it("shows hammer and calls onWhack when mole is active", () => {
+  it("shows hammer and calls onWhack immediately when mole is active", () => {
     const onWhack = vi.fn();
 
     render(<Mole isActive={true} onWhack={onWhack} />);
@@ -38,13 +38,13 @@ describe("Mole", () => {
     fireEvent.click(screen.getByRole("button"));
 
     expect(screen.getByAltText("hammer")).toBeInTheDocument();
-    expect(onWhack).not.toHaveBeenCalled();
+    expect(onWhack).toHaveBeenCalledTimes(1);
 
     act(() => {
       vi.advanceTimersByTime(200);
     });
 
-    expect(onWhack).toHaveBeenCalledTimes(1);
+    expect(screen.queryByAltText("hammer")).not.toBeInTheDocument();
   });
 
   it("prevents multiple hits while already whacked", () => {
